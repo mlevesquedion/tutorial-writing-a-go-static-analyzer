@@ -9,7 +9,7 @@ Despair no more. In the following tutorial, you will learn how to write a Go sta
 The first step is to describe the errors we want to catch:
 
 `testdata/src/tests/test.go`
-```
+```go
 package nitme
 
 func test() {
@@ -107,7 +107,7 @@ Here's a useful observation: when assigning an empty slice to a variable, the **
 
 Before we can apply this crucial insight, let's write a test that will let us know when our analyzer is working. This is essentially boilerplate:
 `nitme_test.go`
-```
+```go
 package nitme
 
 import (
@@ -128,7 +128,7 @@ The test is simple to write because `analysistest` takes care of most of the det
 
 The code for our analyzer is simple, and I've made a special effort to sprinkle it with helpful comments, so I'll just let you dive in:
 `nitme.go`
-```
+```go
 package nitme
 
 import (
@@ -198,19 +198,19 @@ Now you might be thinking, "Cool, now my computer can yell at me, instead of my 
 Once again, it's a good idea to start with the end in mind: let's update our tests to reflect our new requirement. To do this, we just need to copy our `testdata/src/tests/tests.go` file to a reference file named `testdata/src/tests/test.go.golden`, and make the change we want our analyzer to perform automatically.
 
 Before (in `tests.go`):
-```
+```go
 	incorrect := []int{}                   // want "incorrect empty slice declaration"
 ```
 
 After (in `tests.go.golden`):
-```
+```go
 	var incorrect []int                    // want "incorrect empty slice declaration"
 ```
 
 We also need to make a small change in `nitme_test.go` to let `analysistest` know that we want to verify that our fix is applied correctly: `analysistest.Run(...)` becomes `analysistest.RunWithSuggestedFixes(...)`.
 
 We can now implement the feature. When we report an incorrect empty slice declaration, we just need to provide a suggested fix:
-```
+```go
 [...]
 
 			// At this point, we know the assignment is declaring an empty slice,
